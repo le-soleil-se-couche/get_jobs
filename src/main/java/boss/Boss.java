@@ -414,8 +414,26 @@ public class Boss {
             AiFilter filterResult = null;
             if (config.getEnableAI()) {
                 //AI检测岗位是否匹配
-                String jd = CHROME_DRIVER.findElement(By.xpath("//div[@class='job-sec-text']")).getText();
-                filterResult = checkJob(keyword, job.getJobName(), jd);
+String jd = CHROME_DRIVER.findElement(By.xpath("//div[@class='job-sec-text']")).getText();
+if (!AiFilterUtil.shouldSayHi(jd)) {
+    log.info("❌ 匹配度不足，自动跳过该岗位");
+    closeWindow(tabs);
+    continue;
+}
+
+// 👇👇👇 插入 GPT 嵌入匹配逻辑
+List<Double> resumeVec = EmbeddingUtil.getEmbedding(ResumeUtil.load());
+List<Double> jdVec = EmbeddingUtil.getEmbedding(jd);
+double matchScore = CosineSimilarity.calculate(resumeVec, jdVec);
+if (matchScore < 0.85) {
+    log.info("Boss岗位匹配度为 {}，低于0.85，跳过投递", matchScore);
+    closeWindow(tabs);
+    continue;
+}
+// 👆👆👆
+
+filterResult = checkJob(keyword, job.getJobName(), jd);  // 原逻辑
+
             }
 
 

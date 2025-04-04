@@ -151,8 +151,15 @@ public class Job51 {
         for (int i = 0; i < checkboxes.size(); i++) {
             WebElement checkbox = checkboxes.get(i);
             executor.executeScript("arguments[0].click();", checkbox);
-            String title = titles.get(i).getText();
-            String company = companies.get(i).getText();
+        String title = titles.get(i).getText();
+        String company = companies.get(i).getText();
+        String jd = title + " " + company;
+
+        if (!AiFilterUtil.shouldSayHi(jd)) {
+            log.info("❌ 匹配度不足，自动跳过该岗位");
+            continue;
+}
+
             resultList.add(company + " | " + title);
             log.info("选中:{} | {} 职位", company, title);
         }

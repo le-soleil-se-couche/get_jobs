@@ -92,6 +92,13 @@ public class ZhiLian {
             }
             // 投递
             WebElement submit = WAIT.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='betch__button']")));
+            String jd = CHROME_DRIVER.findElement(By.xpath("//div[@class='positionlist']")).getText();
+if (!AiFilterUtil.shouldSayHi(jd)) {
+    log.info("❌ 匹配度不足，自动跳过该岗位");
+    continue;
+}
+
+
             submit.click();
             if (checkIsLimit()) {
                 break;

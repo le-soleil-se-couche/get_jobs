@@ -146,6 +146,13 @@ public class Lagou {
                     continue;
                 }
                 submit = CHROME_DRIVER.findElement(By.className("resume-deliver"));
+                String jd = CHROME_DRIVER.findElement(By.xpath("//div[contains(@class,'position-description')]")).getText();
+if (!AiFilterUtil.shouldSayHi(jd)) {
+    log.info("❌ 匹配度不足，自动跳过该岗位");
+    CHROME_DRIVER.close();
+    getWindow();
+    continue;
+}
                 if ("投简历".equals(submit.getText())) {
                     String jobTitle = null;
                     String companyName = null;
@@ -176,8 +183,18 @@ public class Lagou {
                             salary = CHROME_DRIVER.findElement(By.cssSelector("span.salary")).getText();
                             weal = CHROME_DRIVER.findElement(By.cssSelector("dd.job-advantage p")).getText();
                         } catch (Exception ex) {
+
                             log.error("第二次获取职位信息失败，放弃了！", ex);
                         }
+                        String jd = jobTitle + "。" + jobInfo + "。" + companyInfo;
+
+if (!AiFilterUtil.shouldSayHi(jd)) {
+    log.info("❌ 匹配度不足，自动跳过该岗位");
+    CHROME_DRIVER.close();
+    getWindow();
+    continue;
+}
+
                     }
                     log.info("投递: {},职位: {},公司: {},职位信息: {},公司信息: {},薪资: {},福利: {}", jobTitle, jobTitle, companyName, jobInfo, companyInfo, salary, weal);
                     jobCount++;

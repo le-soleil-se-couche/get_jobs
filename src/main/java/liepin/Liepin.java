@@ -183,6 +183,13 @@ public class Liepin {
             } catch (Exception ignore) {
                 text = "";
             }
+            String jd = CHROME_DRIVER.findElements(By.xpath("//div[contains(@class,'job-card-pc-container')]")).get(i).getText();
+if (!AiFilterUtil.shouldSayHi(jd)) {
+    log.info("❌ 匹配度不足，自动跳过该岗位");
+    continue;
+}
+
+
             if (text.contains("聊一聊")) {
                 try {
                     button.click();
